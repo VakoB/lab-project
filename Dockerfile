@@ -1,3 +1,19 @@
+# ======= development ========
+
+FROM node:22-alpine AS development
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY package.json yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+CMD ["yarn", "start:dev"]
+
 # ======= build ========
 
 FROM node:22-alpine AS builder

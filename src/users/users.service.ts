@@ -12,39 +12,18 @@ export class UsersService {
     private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  // private users = [
-  //   {
-  //     id: 1,
-  //     name: 'Leanne Graham',
-  //     email: 'Sincere@april.biz',
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Ervin Howell',
-  //     email: 'Shanna@melissa.tv',
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Clementine Bauch',
-  //     email: 'Nathan@yesenia.net',
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'Patricia Lebsack',
-  //     email: 'Julianne.OConner@kory.org',
-  //   },
-  //   {
-  //     id: 5,
-  //     name: 'Chelsey Dietrich',
-  //     email: 'Lucio_Hettinger@annie.ca',
-  //   },
-  // ];
   findAll() {
     return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return this.usersRepository.findOneBy({ id });
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+
+    return user;
   }
 
   createUser(user: CreateUserDto) {

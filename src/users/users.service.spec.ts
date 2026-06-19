@@ -58,12 +58,12 @@ describe('UsersService', () => {
       expect(result).toEqual(mockUser);
     });
 
-    it('should return null if user not found', async () => {
+    it('should throw NotFoundException if user not found', async () => {
       mockRepository.findOneBy.mockResolvedValue(null);
 
-      const result = await service.findOne(10);
-
-      expect(result).toBeNull();
+      await expect(service.findOne(10)).rejects.toThrow(
+        new NotFoundException('User 10 not found'),
+      );
     });
   });
 
