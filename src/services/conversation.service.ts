@@ -31,6 +31,7 @@ export class ConversationService {
   }
 
   async update(id: string, data: UpdateConversationInput) {
+    await this.findById(id);
     try {
       return await prisma.conversation.update({ where: { id }, data });
     } catch (error) {
@@ -39,6 +40,7 @@ export class ConversationService {
   }
 
   async delete(id: string) {
+    await this.findById(id);
     try {
       return await prisma.conversation.update({
         where: { id },

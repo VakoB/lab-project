@@ -29,6 +29,7 @@ export class OrganizationService {
   }
 
   async update(id: string, data: UpdateOrganizationInput) {
+    await this.findById(id);
     try {
       return await prisma.organization.update({ where: { id }, data });
     } catch (error) {
@@ -37,6 +38,7 @@ export class OrganizationService {
   }
 
   async delete(id: string) {
+    await this.findById(id);
     try {
       return await prisma.organization.update({
         where: { id },

@@ -21,7 +21,10 @@ model Organization {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? 
+  
+  @@index([deletedAt])
+
 }
 
 model User {
@@ -50,11 +53,11 @@ model Session {
   userId String
   user User @relation(fields: [userId], references: [id])
 
-  token String
+  token String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  expiresAt DateTime?
+  expiresAt DateTime
 
   @@index([userId])
 }
@@ -95,6 +98,7 @@ model Role {
   id String @id @default(cuid())
 
   name String @unique
+  description String?
   users User[]
   permissions Permission[]
 
@@ -129,6 +133,7 @@ model AuditLog {
 
   @@index([userId])
   @@index([entity])
+  @@index([entityId])
 }
 
 enum AuditAction {

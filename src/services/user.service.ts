@@ -34,17 +34,19 @@ export class UserService {
   }
 
   async update(id: string, data: UpdateUserInput) {
+    await this.findById(id);
     try {
-      return await prisma.user.update({ where: { id, deletedAt: null }, data });
+      return await prisma.user.update({ where: { id }, data });
     } catch (error) {
       handlePrismaError(error);
     }
   }
 
   async delete(id: string) {
+    await this.findById(id);
     try {
       return await prisma.user.update({
-        where: { id, deletedAt: null },
+        where: { id },
         data: { deletedAt: new Date() },
       });
     } catch (error) {

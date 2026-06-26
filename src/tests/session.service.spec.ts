@@ -23,7 +23,7 @@ describe('SessionService', () => {
   });
 
   it('creates a session', async () => {
-    const input = { userId: 'u1', token: 'tok' };
+    const input = { userId: 'u1', token: 'tok', expiresAt: new Date() };
     (prisma.session.create as jest.Mock).mockResolvedValue({
       id: '1',
       ...input,
@@ -46,7 +46,7 @@ describe('SessionService', () => {
     (prisma.session.create as jest.Mock).mockRejectedValue(error);
 
     await expect(
-      service.create({ userId: 'bad', token: 'x' }),
+      service.create({ userId: 'bad', token: 'x', expiresAt: new Date() }),
     ).rejects.toThrow();
   });
 

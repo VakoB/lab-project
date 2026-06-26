@@ -5,7 +5,7 @@ import { handlePrismaError } from '../../src/utils/prisma.error.handler';
 interface CreateSessionInput {
   userId: string;
   token: string;
-  expiresAt?: Date;
+  expiresAt: Date;
 }
 
 interface UpdateSessionInput {

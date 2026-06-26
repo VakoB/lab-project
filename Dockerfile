@@ -28,6 +28,8 @@ RUN yarn install
 
 COPY . .
 
+RUN yarn prisma generate
+
 RUN yarn build
 
 # ======== production ========
@@ -43,6 +45,8 @@ COPY package.json yarn.lock ./
 RUN yarn install --production
 
 COPY --from=builder /app/dist ./dist
+
+COPY --from=builder /app/generated ./generated
 
 EXPOSE 3000
 
