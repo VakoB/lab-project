@@ -60,6 +60,7 @@ model Session {
   expiresAt DateTime
 
   @@index([userId])
+  @@index([expiresAt])
 }
 
 model Conversation {
@@ -74,7 +75,7 @@ model Conversation {
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
-  @@index([ownerId])
+  @@index([ownerId, createdAt])
 }
 
 model Message {
@@ -90,8 +91,8 @@ model Message {
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
-  @@index([conversationId])
-  @@index([senderId])
+  @@index([conversationId, createdAt])
+  @@index([senderId, createdAt])
 }
 
 model Role {

@@ -56,11 +56,28 @@ export class UserService {
 
   async list() {
     try {
-      return prisma.user.findMany({
+      return await prisma.user.findMany({
         where: { deletedAt: null },
       });
     } catch (error) {
       handlePrismaError(error);
     }
+  }
+
+  // cursor pagination
+  async listAllPaginated(take: number = 20, cursor?: string) {
+    const users = await prisma.user.findMany({
+      take,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: { id: 'asc' },
+    });
+
+    const nextCursor =
+      users.length === take ? users[users.length - 1].id : null;
+    return {
+      data: users,
+      nextCursor,
+    };
   }
 }

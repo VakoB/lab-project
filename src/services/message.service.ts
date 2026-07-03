@@ -63,4 +63,21 @@ export class MessageService {
       handlePrismaError(error);
     }
   }
+
+  // cursor pagination
+  async listAllPaginated(take: number = 20, cursor?: string) {
+    const messages = await prisma.message.findMany({
+      take,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: { id: 'asc' },
+    });
+
+    const nextCursor =
+      messages.length === take ? messages[messages.length - 1].id : null;
+    return {
+      data: messages,
+      nextCursor,
+    };
+  }
 }
