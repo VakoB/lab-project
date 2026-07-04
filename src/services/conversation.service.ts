@@ -65,8 +65,9 @@ export class ConversationService {
   }
 
   // cursor pagination
-  async listAllPaginated(take: number = 20, cursor?: string) {
+  async listAllPaginated(take: number = 20, ownerId: string, cursor?: string) {
     const conversations = await prisma.conversation.findMany({
+      where: { deletedAt: null, ownerId },
       take,
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,

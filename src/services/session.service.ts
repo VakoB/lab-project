@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { prisma } from '../prisma/prisma.client';
-import { handlePrismaError } from '../../src/utils/prisma.error.handler';
+import { handlePrismaError } from '../utils/prisma.error.handler';
 
 interface CreateSessionInput {
   userId: string;

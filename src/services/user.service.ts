@@ -67,10 +67,11 @@ export class UserService {
   // cursor pagination
   async listAllPaginated(take: number = 20, cursor?: string) {
     const users = await prisma.user.findMany({
+      where: { deletedAt: null },
       take,
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
-      orderBy: { id: 'asc' },
+      orderBy: { createdAt: 'asc' },
     });
 
     const nextCursor =
