@@ -56,11 +56,11 @@ npx prisma db seed
 
 Seeded dataset:
 
-* 10 Organizations
-* 1,000 Users
-* 500 Sessions
-* 5,000 Conversations
-* 50,000 Messages
+- 10 Organizations
+- 1,000 Users
+- 500 Sessions
+- 5,000 Conversations
+- 50,000 Messages
 
 ---
 
@@ -74,6 +74,12 @@ npx prisma studio
 
 ---
 
+# Run the app
+
+```bash
+yarn run start:dev
+```
+
 # Query Analysis
 
 Query analysis results are located in:
@@ -84,11 +90,11 @@ docs/query-analysis.md
 
 Analyzed queries:
 
-* Find User by Email
-* List Organization Users
-* List User Conversations
-* List Conversation Messages
-* List Active Sessions
+- Find User by Email
+- List Organization Users
+- List User Conversations
+- List Conversation Messages
+- List Active Sessions
 
 Execution plans were collected using:
 
@@ -102,35 +108,9 @@ EXPLAIN ANALYZE
 
 Cursor pagination has been implemented for:
 
-* Users
-* Conversations
-* Messages
-
-Pagination methods are located inside:
-
-```text
-src/services/
-```
-
-Example usage:
-
-```ts
-const page1 = await userService.listUsers(20);
-
-const page2 = await userService.listUsers(
-  20,
-  page1.nextCursor
-);
-```
-
-Example script to run to test pagination: 
-script is located at `src/tests/scripts/user.pagination.example.ts`
-the script logs out result.
-
-```bash
-yarn run cursor:pagination:example
-```
-
+- Users
+- Conversations
+- Messages
 
 ### LIMIT/OFFSET vs Cursor Pagination
 
@@ -160,27 +140,26 @@ Cursor pagination is more efficient for large datasets because it avoids going t
 
 ---
 
-# Transactions
+# Swagger UI
 
-Transactional operations are implemented in:
-
-```text
-src/services/transaction.service.ts
-```
-
----
-
-# Rollback Demonstration
-
-Rollback test is available in:
+API Documentation can be access on
 
 ```text
-src/tests/scripts/transaction.services.example.ts
+http://localhost:3000/api/docs
 ```
-the script logs out result (null).
 
-Run:
+# JSON Payload Optimization
 
-```bash
-yarn run transaction:example
+Documentation is available in
+
+```text
+docs/json-performace.md
+```
+
+# HTTP Error Handling
+
+Standardized error structure documentation is available in
+
+```text
+docs/error-handling
 ```

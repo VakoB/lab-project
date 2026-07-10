@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { ConversationService } from '../services/conversation.service';
+import { ConversationService } from '../conversation/conversation.service';
 
 jest.mock('../prisma/prisma.client', () => ({
   prisma: {

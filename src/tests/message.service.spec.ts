@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { MessageService } from '../services/message.service';
+import { MessageService } from '../message/message.service';
 
 jest.mock('../prisma/prisma.client', () => ({
   prisma: {

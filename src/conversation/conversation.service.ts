@@ -1,21 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { prisma } from '../prisma/prisma.client';
 import { handlePrismaError } from '../utils/prisma.error.handler';
-
-interface CreateConversationInput {
-  ownerId: string;
-  title: string;
-}
-
-interface UpdateConversationInput {
-  title?: string;
-}
+import { CreateConversationDto } from './dto/create-conversation.dto';
+import { UpdateConversationDto } from './dto/update-conversation.dto';
+import { plainToInstance } from 'class-transformer';
+import { ConversationEntity } from './entities/conversation.entity';
 
 @Injectable()
 export class ConversationService {
-  async create(data: CreateConversationInput) {
+  async create(data: CreateConversationDto) {
     try {
-      return await prisma.conversation.create({ data });
+      const conversation = await prisma.conversation.create({ data });
+      return plainToInstance(ConversationEntity, conversation, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       handlePrismaError(error);
     }
@@ -27,13 +25,21 @@ export class ConversationService {
     });
     if (!conversation)
       throw new NotFoundException(`Conversation ${id} not found`);
-    return conversation;
+    return plainToInstance(ConversationEntity, conversation, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async update(id: string, data: UpdateConversationInput) {
+  async update(id: string, data: UpdateConversationDto) {
     await this.findById(id);
     try {
-      return await prisma.conversation.update({ where: { id }, data });
+      const updatedConversation = await prisma.conversation.update({
+        where: { id },
+        data,
+      });
+      return plainToInstance(ConversationEntity, updatedConversation, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       handlePrismaError(error);
     }
@@ -42,7 +48,7 @@ export class ConversationService {
   async delete(id: string) {
     await this.findById(id);
     try {
-      return await prisma.conversation.update({
+      await prisma.conversation.update({
         where: { id },
         data: { deletedAt: new Date() },
       });
@@ -51,21 +57,8 @@ export class ConversationService {
     }
   }
 
-  async list(ownerId: string) {
-    try {
-      return await prisma.conversation.findMany({
-        where: {
-          deletedAt: null,
-          ownerId,
-        },
-      });
-    } catch (error) {
-      handlePrismaError(error);
-    }
-  }
-
   // cursor pagination
-  async listAllPaginated(take: number = 20, ownerId: string, cursor?: string) {
+  async findAll(ownerId: string, take: number = 20, cursor?: string) {
     const conversations = await prisma.conversation.findMany({
       where: { deletedAt: null, ownerId },
       take,
@@ -78,8 +71,16 @@ export class ConversationService {
       conversations.length === take
         ? conversations[conversations.length - 1].id
         : null;
+
+    const serializedConversations = plainToInstance(
+      ConversationEntity,
+      conversations,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
     return {
-      data: conversations,
+      data: serializedConversations,
       nextCursor,
     };
   }

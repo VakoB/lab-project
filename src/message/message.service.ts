@@ -1,22 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { prisma } from '../prisma/prisma.client';
 import { handlePrismaError } from '../utils/prisma.error.handler';
-
-interface CreateMessageInput {
-  senderId: string;
-  conversationId: string;
-  content: string;
-}
-
-interface UpdateMessageInput {
-  content?: string;
-}
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
+import { plainToInstance } from 'class-transformer';
+import { MessageEntity } from './entities/message.entity';
 
 @Injectable()
 export class MessageService {
-  async create(data: CreateMessageInput) {
+  async create(data: CreateMessageDto) {
     try {
-      return await prisma.message.create({ data });
+      const message = await prisma.message.create({ data });
+      return plainToInstance(MessageEntity, message, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       handlePrismaError(error);
     }
@@ -27,13 +24,21 @@ export class MessageService {
       where: { id, deletedAt: null },
     });
     if (!message) throw new NotFoundException(`Message ${id} not found`);
-    return message;
+    return plainToInstance(MessageEntity, message, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async update(id: string, data: UpdateMessageInput) {
+  async update(id: string, data: UpdateMessageDto) {
     await this.findById(id);
     try {
-      return await prisma.message.update({ where: { id }, data });
+      const updatedMessage = await prisma.message.update({
+        where: { id },
+        data,
+      });
+      return plainToInstance(MessageEntity, updatedMessage, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       handlePrismaError(error);
     }
@@ -42,7 +47,7 @@ export class MessageService {
   async delete(id: string) {
     await this.findById(id);
     try {
-      return await prisma.message.update({
+      await prisma.message.update({
         where: { id },
         data: { deletedAt: new Date() },
       });
@@ -51,37 +56,25 @@ export class MessageService {
     }
   }
 
-  async list(conversationId: string) {
-    try {
-      return await prisma.message.findMany({
-        where: {
-          deletedAt: null,
-          conversationId,
-        },
-      });
-    } catch (error) {
-      handlePrismaError(error);
-    }
-  }
-
   // cursor pagination
-  async listAllPaginated(
-    take: number = 20,
-    conversationId: string,
-    cursor?: string,
-  ) {
+  async findAll(conversationId: string, take: number = 20, cursor?: string) {
     const messages = await prisma.message.findMany({
       where: { deletedAt: null, conversationId },
       take,
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
       orderBy: { id: 'asc' },
+      select: { id: true, content: true, senderId: true, conversationId: true },
     });
 
     const nextCursor =
       messages.length === take ? messages[messages.length - 1].id : null;
+
+    const serializedMessages = plainToInstance(MessageEntity, messages, {
+      excludeExtraneousValues: true,
+    });
     return {
-      data: messages,
+      data: serializedMessages,
       nextCursor,
     };
   }

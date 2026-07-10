@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { NotFoundException } from '@nestjs/common';
-import { OrganizationService } from '../services/organization.service';
+import { OrganizationService } from '../organization/organization.service';
 
 jest.mock('../prisma/prisma.client', () => ({
   prisma: {
