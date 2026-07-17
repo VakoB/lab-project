@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -21,18 +22,22 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
+import { ParseCuidPipe } from 'src/utils/pipes/parse-cuid.pipe';
+import { ApiPaginatedResponse } from '../utils/decorators/api-paginated-response.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiParam({ name: 'id', description: 'The unique ID of the user' })
   @ApiResponse({ status: 200, description: 'User found.', type: UserEntity })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id', ParseCuidPipe) id: string) {
     return await this.userService.findById(id);
   }
 
@@ -49,10 +54,12 @@ export class UserController {
     required: false,
     description: 'The cursor ID for pagination',
   })
+  @ApiPaginatedResponse(UserEntity, 'Users retrieved successfully.')
   @ApiResponse({ status: 200, description: 'Users retrieved successfully.' })
   async findAll(
-    @Query('take', ParseIntPipe) take: number,
-    @Query('cursor') cursor: string,
+    @Query('take', new DefaultValuePipe(20), ParseIntPipe) take: number,
+    @Query('cursor', new DefaultValuePipe(undefined), ParseCuidPipe)
+    cursor: string,
   ) {
     return await this.userService.findAll(take, cursor);
   }
@@ -81,7 +88,10 @@ export class UserController {
     type: UserEntity,
   })
   @ApiResponse({ status: 404, description: 'User profile not found.' })
-  async update(@Param('id') id: string, @Body() userData: UpdateUserDto) {
+  async update(
+    @Param('id', ParseCuidPipe) id: string,
+    @Body() userData: UpdateUserDto,
+  ) {
     return this.userService.update(id, userData);
   }
 
@@ -94,7 +104,7 @@ export class UserController {
     description: 'User successfully purged from platform.',
   })
   @ApiResponse({ status: 404, description: 'User profile not found.' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseCuidPipe) id: string) {
     return this.userService.delete(id);
   }
 }

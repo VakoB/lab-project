@@ -10,11 +10,14 @@ import { UserEntity } from './entities/user.entity';
 export class UserService {
   async create(data: CreateUserDto) {
     try {
+      const { password, ...userData } = data;
+
+      const passwordHash = password;
       const createdUser = await prisma.user.create({
-        data,
+        data: { ...userData, passwordHash },
         select: { id: true, username: true, email: true, organizationId: true },
       });
-      plainToInstance(UserEntity, createdUser, {
+      return plainToInstance(UserEntity, createdUser, {
         excludeExtraneousValues: true,
       });
     } catch (error) {
@@ -68,7 +71,7 @@ export class UserService {
         take,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: 'desc' },
       });
 
       const nextCursor =

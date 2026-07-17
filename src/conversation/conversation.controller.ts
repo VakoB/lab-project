@@ -21,6 +21,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ConversationEntity } from './entities/conversation.entity';
+import { ApiPaginatedResponse } from '../utils/decorators/api-paginated-response.decorator';
 
 @ApiTags('conversations')
 @Controller('conversations')
@@ -62,6 +63,10 @@ export class ConversationController {
     status: 200,
     description: 'Conversations retrieved successfully.',
   })
+  @ApiPaginatedResponse(
+    ConversationEntity,
+    'Conversations retrieved successfully.',
+  )
   async findAll(
     @Query('ownerId') ownerId: string,
     @Query('take', ParseIntPipe) take: number,

@@ -1,13 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { CreateConversationDto } from './create-conversation.dto';
 
-export class UpdateConversationDto {
-  @ApiProperty({
-    description: 'The title or name of the conversation group',
-    example: 'Project Alpha Discussion',
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty()
-  title!: string;
-}
+export class UpdateConversationDto extends PartialType(
+  PickType(CreateConversationDto, ['title'] as const),
+) {}

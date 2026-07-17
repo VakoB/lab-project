@@ -1,4 +1,4 @@
-# Week 4 – Database Performance & Advanced SQL
+# Lab Project
 
 # Installation
 
@@ -28,6 +28,12 @@ npx prisma migrate dev
 
 ---
 
+# Create .env file in the root
+
+use .env.example for a guide
+
+---
+
 # Running PostgreSQL
 
 Start PostgreSQL using Docker Compose:
@@ -36,7 +42,7 @@ Start PostgreSQL using Docker Compose:
 docker compose up -d
 ```
 
-Stop containers:
+To stop containers:
 
 ```bash
 docker compose down
@@ -64,6 +70,15 @@ Seeded dataset:
 
 ---
 
+# Run the app
+
+```bash
+yarn run start:dev
+```
+The app runs on port 3001
+
+---
+
 # Prisma Studio
 
 Open Prisma Studio to see the seeded data:
@@ -74,11 +89,6 @@ npx prisma studio
 
 ---
 
-# Run the app
-
-```bash
-yarn run start:dev
-```
 
 # Query Analysis
 

@@ -1,14 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { CreateUserDto } from './create-user.dto';
 
-export class UpdateUserDto {
-  @ApiProperty({
-    description: 'The chosen handle or unique username for profile visibility',
-    example: 'john_doe',
-    minLength: 2,
-    type: String,
-  })
-  @IsString()
-  @MinLength(2)
-  username!: string;
-}
+export class UpdateUserDto extends PartialType(
+  PickType(CreateUserDto, ['username'] as const),
+) {}

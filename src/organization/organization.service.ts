@@ -61,6 +61,7 @@ export class OrganizationService {
     try {
       const organizations = await prisma.organization.findMany({
         where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' },
       });
       return plainToInstance(OrganizationEntity, organizations, {
         excludeExtraneousValues: true,

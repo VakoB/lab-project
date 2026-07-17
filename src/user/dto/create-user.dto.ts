@@ -10,7 +10,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  organizationId!: string;
+  organizationId: string = 'cmr3ldqzo0004cgv5xk9rri32';
 
   @ApiProperty({
     description: 'The chosen handle or unique username for profile visibility',
@@ -32,13 +32,12 @@ export class CreateUserDto {
   email!: string;
 
   @ApiProperty({
-    description:
-      'The securely processed or hashed password string for authentication integrity',
-    example: '$2b$10$UnIqUeHaShInGsTrInGvAlUeHeRe...',
+    description: 'The plain-text password chosen by the user',
+    example: 'super-secure-password-123',
     minLength: 8,
     type: String,
   })
   @IsString()
   @MinLength(8)
-  passwordHash!: string;
+  password!: string;
 }

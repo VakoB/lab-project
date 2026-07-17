@@ -23,7 +23,7 @@ export function handlePrismaError(error: unknown) {
         throw new BadRequestException(`Invalid reference for ${field}`);
       }
       default:
-        throw new InternalServerErrorException(`Database error: (${error})`);
+        throw new InternalServerErrorException(`Database error`);
     }
   }
 

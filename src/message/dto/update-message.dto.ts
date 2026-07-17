@@ -1,12 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { CreateMessageDto } from './create-message.dto';
 
-export class UpdateMessageDto {
-  @ApiProperty({
-    description: 'The raw text content of the message',
-    example: 'Hey, did you finish the assignment yet?',
-    type: String,
-  })
-  @IsString()
-  content!: string;
-}
+export class UpdateMessageDto extends PartialType(
+  PickType(CreateMessageDto, ['content'] as const),
+) {}
