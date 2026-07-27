@@ -9,6 +9,7 @@ import { SessionModule } from './session/session.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     OrganizationModule,
     SessionModule,
     AuthModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [

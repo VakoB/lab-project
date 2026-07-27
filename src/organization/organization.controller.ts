@@ -13,7 +13,6 @@ import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { OrganizationEntity } from './entities/organization.entity';
-import { ApiPaginatedResponse } from 'src/utils/decorators/api-paginated-response.decorator';
 
 @ApiTags('organizations')
 @Controller('organizations')
@@ -35,10 +34,6 @@ export class OrganizationController {
 
   @Get()
   @ApiOperation({ summary: 'List all organizations' })
-  @ApiPaginatedResponse(
-    OrganizationEntity,
-    'Organizations retrieved successfully.',
-  )
   @ApiResponse({
     status: 200,
     description: 'Organizations retrieved successfully.',

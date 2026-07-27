@@ -18,6 +18,7 @@ model Organization {
 
   name String
   users User[]
+  files File[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,8 +30,8 @@ model Organization {
 
 model User {
   id String @id @default(cuid())
-  organizationId String 
-  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
 
   username String
   email String @unique
@@ -40,12 +41,33 @@ model User {
   messages Message[]
   roles Role[]
   auditLog AuditLog[]
+  files File[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
   @@index([organizationId])
+}
+
+model File {
+  id String @id @default(uuid())
+  originalName String
+  mimeType String
+  size Int
+  sha256 String
+  storageKey String
+  
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  uploadedById String
+  uploadedBy User @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([organizationId, sha256])
 }
 
 model Session {

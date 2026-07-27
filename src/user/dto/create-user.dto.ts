@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -8,9 +8,9 @@ export class CreateUserDto {
     example: 'cmr3led1a00a1cgv5y9abc123',
     type: String,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  organizationId: string = 'cmr3ldqzo0004cgv5xk9rri32';
+  organizationId?: string;
 
   @ApiProperty({
     description: 'The chosen handle or unique username for profile visibility',

@@ -24,14 +24,12 @@ import {
 import { UserEntity } from './entities/user.entity';
 import { ParseCuidPipe } from 'src/utils/pipes/parse-cuid.pipe';
 import { ApiPaginatedResponse } from '../utils/decorators/api-paginated-response.decorator';
-import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiParam({ name: 'id', description: 'The unique ID of the user' })

@@ -155,7 +155,7 @@ Cursor pagination is more efficient for large datasets because it avoids going t
 API Documentation can be access on
 
 ```text
-http://localhost:3000/api/docs
+http://localhost:3001/api/docs
 ```
 
 # JSON Payload Optimization

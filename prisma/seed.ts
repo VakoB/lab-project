@@ -1,5 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from 'generated/prisma/client';
+import bcrypt from 'bcrypt';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -29,10 +30,12 @@ async function main() {
 
   const users: any[] = [];
   for (let i = 1; i <= USER_COUNT; i++) {
+    const password = 'password123';
+    const passwordHash = await bcrypt.hash(password, 10);
     users.push({
       username: `User ${i}`,
       email: `user${i}@gmail.com`,
-      passwordHash: 'password123',
+      passwordHash,
       organizationId:
         createdOrganizations[Math.floor(Math.random() * ORGANIZATION_COUNT)].id,
     });

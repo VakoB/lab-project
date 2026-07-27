@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserEntity } from './entities/user.entity';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -12,7 +13,7 @@ export class UserService {
     try {
       const { password, ...userData } = data;
 
-      const passwordHash = password;
+      const passwordHash = await bcrypt.hash(password, 10);
       const createdUser = await prisma.user.create({
         data: { ...userData, passwordHash },
         select: { id: true, username: true, email: true, organizationId: true },

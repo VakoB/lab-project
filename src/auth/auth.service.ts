@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LogInDto } from './dto/login.dto';
 import { prisma } from 'src/prisma/prisma.client';
+import bcrypt from 'bcrypt';
 
 export interface JwtPayload {
   userId: string;
@@ -21,9 +18,12 @@ export class AuthService {
       where: { email: loginData.email, deletedAt: null },
     });
 
-    if (!user) throw new NotFoundException('Invalid credentials');
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const passwordValid = user.passwordHash === loginData.password;
+    const passwordValid = await bcrypt.compare(
+      loginData.password,
+      user.passwordHash,
+    );
     if (!passwordValid) throw new UnauthorizedException('Invalid credentials');
 
     const session = await prisma.session.create({
@@ -50,6 +50,7 @@ export class AuthService {
   }
 
   async logOut(sessionId: string) {
+    console.log('logging out');
     await prisma.session.delete({ where: { id: sessionId } }).catch(() => {
       // already deleted
     });
