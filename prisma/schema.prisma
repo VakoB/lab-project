@@ -176,3 +176,39 @@ enum EntityType {
   ROLE
   PERMISSION
 }
+
+model FileProcessingJob {
+  id String @id @default(cuid())
+  fileId String @unique
+  organizationId String
+  correlationId String         
+  status ProcessingStatus @default(PENDING)
+  retryCount Int @default(0)
+  errorMessage String?
+  result ProcessingResult?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model ProcessingResult {
+  id String @id @default(cuid())
+  jobId String @unique
+  job FileProcessingJob @relation(fields: [jobId], references: [id])
+
+  totalQuantity Int
+  totalRevenue Float
+  rowsProcessed Int
+
+  createdAt DateTime @default(now())
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

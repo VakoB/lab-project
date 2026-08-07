@@ -34,9 +34,9 @@ use .env.example for a guide
 
 ---
 
-# Running PostgreSQL
+# Running PostgreSQL + MinIO + ScanAV + RabbitMQ
 
-Start PostgreSQL using Docker Compose:
+Start the services using Docker Compose:
 
 ```bash
 docker compose up -d
@@ -70,14 +70,23 @@ Seeded dataset:
 
 ---
 
-# Run the app
+# Run the api
 
 ```bash
-yarn run start:dev
+yarn run start:api
 ```
 The app runs on port 3001
 
 ---
+
+# Run the worker
+
+```bash
+yarn run start:worker
+```
+
+---
+
 
 # Prisma Studio
 
@@ -88,6 +97,15 @@ npx prisma studio
 ```
 
 ---
+
+# RabbitMQ doc
+
+RabbitMQ doc is located in:
+
+```text
+docs/rabbitmq.md
+```
+
 
 
 # Query Analysis
