@@ -1,4 +1,4 @@
-# Async File Processing Pipeline — RabbitMQ
+# RabbitMQ
 
 ## Overview
 
