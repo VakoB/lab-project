@@ -1,0 +1,214 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id String @id @default(cuid())
+
+  name String
+  users User[]
+  files File[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? 
+  
+  @@index([deletedAt])
+
+}
+
+model User {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+
+  username String
+  email String @unique
+  passwordHash String
+  sessions Session[]
+  conversations Conversation[]
+  messages Message[]
+  roles Role[]
+  auditLog AuditLog[]
+  files File[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([organizationId])
+}
+
+model File {
+  id String @id @default(uuid())
+  originalName String
+  mimeType String
+  size Int
+  sha256 String
+  storageKey String
+  
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  uploadedById String
+  uploadedBy User @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([organizationId, sha256])
+}
+
+model Session {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  token String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Conversation {
+  id String @id @default(cuid())
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+
+  messages Message[]
+  title String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([ownerId, createdAt])
+}
+
+model Message {
+  id String @id @default(cuid())
+  senderId String
+  conversationId String
+  sender User @relation(fields: [senderId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([conversationId, createdAt])
+  @@index([senderId, createdAt])
+}
+
+model Role {
+  id String @id @default(cuid())
+
+  name String @unique
+  description String?
+  users User[]
+  permissions Permission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model Permission {
+  id String @id @default(cuid())
+
+  name String @unique
+  description String?
+  roles Role[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  
+  action AuditAction
+  entity EntityType
+  entityId String
+  description String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity])
+  @@index([entityId])
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+}
+
+enum EntityType {
+  USER
+  ORGANIZATION
+  SESSION
+  CONVERSATION
+  MESSAGE
+  ROLE
+  PERMISSION
+}
+
+model FileProcessingJob {
+  id String @id @default(cuid())
+  fileId String @unique
+  organizationId String
+  correlationId String         
+  status ProcessingStatus @default(PENDING)
+  retryCount Int @default(0)
+  errorMessage String?
+  result ProcessingResult?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model ProcessingResult {
+  id String @id @default(cuid())
+  jobId String @unique
+  job FileProcessingJob @relation(fields: [jobId], references: [id])
+
+  totalQuantity Int
+  totalRevenue Float
+  rowsProcessed Int
+
+  createdAt DateTime @default(now())
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
