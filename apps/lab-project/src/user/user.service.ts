@@ -65,10 +65,10 @@ export class UserService {
     }
   }
 
-  async findAll(take: number = 20, cursor?: string) {
+  async findAll(organizationId: string, take: number = 20, cursor?: string) {
     try {
       const users = await prisma.user.findMany({
-        where: { deletedAt: null },
+        where: { deletedAt: null, organizationId },
         take,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,

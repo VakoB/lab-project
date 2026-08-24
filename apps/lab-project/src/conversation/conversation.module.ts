@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConversationController } from './conversation.controller';
 import { ConversationService } from './conversation.service';
+import { ConversationGateway } from './conversation.gateway';
+import { ConversationResolver } from './conversation.resolver';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  controllers: [ConversationController],
-  providers: [ConversationService],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+    }),
+  ],
+  providers: [ConversationService, ConversationGateway, ConversationResolver],
+  exports: [ConversationService],
 })
 export class ConversationModule {}

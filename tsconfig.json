@@ -25,7 +25,9 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "@app/shared": ["libs/shared/src/index.ts"],
-      "@app/shared/*": ["libs/shared/src/*"]
+      "@app/shared/*": ["libs/shared/src/*"],
+      "generated/prisma/client": ["generated/prisma/client"],
+      "generated/prisma/client/*": ["generated/prisma/client/*"]
     }
   }
 }

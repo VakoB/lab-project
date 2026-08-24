@@ -16,10 +16,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(req: Request, payload: JwtPayload) {
+    console.log('=== validate() called, payload:', payload);
     const session = await prisma.session.findUnique({
       where: { id: payload.sessionId },
       include: { user: true },
     });
+
+    console.log('=== session found:', !!session);
 
     if (!session || session.user.deletedAt) {
       throw new UnauthorizedException('Session expired');

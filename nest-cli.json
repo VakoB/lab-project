@@ -5,6 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
+    "plugins": [],
+    "assets": [],
     "tsConfigPath": "apps/lab-project/tsconfig.app.json",
     "webpackConfigPath": "webpack.config.js"
   },

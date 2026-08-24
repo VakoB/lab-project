@@ -19,6 +19,7 @@ model Organization {
   name String
   users User[]
   files File[]
+  conversations Conversation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -37,7 +38,8 @@ model User {
   email String @unique
   passwordHash String
   sessions Session[]
-  conversations Conversation[]
+  ownedConversations Conversation[]
+  conversationParticipants ConversationParticipant[]
   messages Message[]
   roles Role[]
   auditLog AuditLog[]
@@ -89,15 +91,32 @@ model Conversation {
   id String @id @default(cuid())
   ownerId String
   owner User @relation(fields: [ownerId], references: [id])
+  
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
 
   messages Message[]
+  participants ConversationParticipant[]
   title String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  deletedAt DateTime?
 
+  @@index([organizationId])
   @@index([ownerId, createdAt])
+}
+
+model ConversationParticipant {
+  id String @id @default(cuid())
+  conversationId String
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  joinedAt DateTime @default(now())
+
+  @@unique([conversationId, userId])
+  @@index([userId])
 }
 
 model Message {
@@ -111,7 +130,6 @@ model Message {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  deletedAt DateTime?
 
   @@index([conversationId, createdAt])
   @@index([senderId, createdAt])

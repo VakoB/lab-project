@@ -1,6 +1,15 @@
-import { PartialType, PickType } from '@nestjs/swagger';
-import { CreateMessageDto } from './create-message.dto';
+import { Field, ID, InputType } from '@nestjs/graphql';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateMessageDto extends PartialType(
-  PickType(CreateMessageDto, ['content'] as const),
-) {}
+@InputType()
+export class UpdateMessageDto {
+  @Field(() => ID)
+  @IsString()
+  @IsNotEmpty()
+  messageId!: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  content!: string;
+}

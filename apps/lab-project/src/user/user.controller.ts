@@ -24,6 +24,8 @@ import {
 import { UserEntity } from './entities/user.entity';
 import { ParseCuidPipe } from '../utils/pipes/parse-cuid.pipe';
 import { ApiPaginatedResponse } from '../utils/decorators/api-paginated-response.decorator';
+import type AuthUser from '../utils/interfaces/AuthUser';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -55,11 +57,12 @@ export class UserController {
   @ApiPaginatedResponse(UserEntity, 'Users retrieved successfully.')
   @ApiResponse({ status: 200, description: 'Users retrieved successfully.' })
   async findAll(
+    @CurrentUser() user: AuthUser,
     @Query('take', new DefaultValuePipe(20), ParseIntPipe) take: number,
     @Query('cursor', new DefaultValuePipe(undefined), ParseCuidPipe)
     cursor: string,
   ) {
-    return await this.userService.findAll(take, cursor);
+    return await this.userService.findAll(user.organizationId, take, cursor);
   }
 
   @Post()

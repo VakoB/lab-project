@@ -4,6 +4,7 @@ import { prisma } from '../prisma/prisma.client';
 @Injectable()
 export class TransactionService {
   async createConversationWithFirstMessage(
+    organizationId: string,
     ownerId: string,
     title: string,
     messageContent: string,
@@ -11,6 +12,7 @@ export class TransactionService {
     return prisma.$transaction(async (tx) => {
       const conversation = await tx.conversation.create({
         data: {
+          organizationId,
           ownerId,
           title,
         },
@@ -52,11 +54,12 @@ export class TransactionService {
     });
   }
 
-  async testRollback(ownerId: string, title: string) {
+  async testRollback(ownerId: string, title: string, organizationId: string) {
     try {
       await prisma.$transaction(async (tx) => {
         await tx.conversation.create({
           data: {
+            organizationId,
             ownerId,
             title,
           },
