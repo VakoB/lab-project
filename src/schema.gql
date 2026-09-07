@@ -1,0 +1,79 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Conversation {
+  createdAt: DateTime!
+  id: ID!
+  messages: [Message!]
+  organizationId: String!
+  ownerId: String!
+  participants: [Participant!]
+  title: String!
+  updatedAt: DateTime!
+}
+
+input CreateConversationDto {
+  organizationId: String!
+  participantId: String!
+  title: String = "Chat"
+}
+
+input CreateMessageDto {
+  content: String!
+  conversationId: String!
+  organizationId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Message {
+  content: String!
+  conversationId: String!
+  createdAt: DateTime!
+  id: ID!
+  sender: User
+  senderId: String!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  createConversation(input: CreateConversationDto!): Conversation!
+  deleteConversation(conversationId: ID!): ID!
+  deleteMessage(messageId: ID!): ID!
+  sendMessage(input: CreateMessageDto!): Message!
+  updateMessage(input: UpdateMessageDto!): Message!
+}
+
+type Participant {
+  conversationId: String!
+  id: ID!
+  joinedAt: DateTime!
+  user: User
+  userId: String!
+}
+
+type Query {
+  conversationMessages(conversationId: ID!): [Message!]!
+  myConversations: [Conversation!]!
+}
+
+type Subscription {
+  messageAdded(conversationId: ID!): Message!
+  messageDeleted(conversationId: ID!): ID!
+  messageUpdated(conversationId: ID!): Message!
+}
+
+input UpdateMessageDto {
+  content: String!
+  messageId: ID!
+}
+
+type User {
+  email: String
+  id: ID!
+  username: String!
+}
