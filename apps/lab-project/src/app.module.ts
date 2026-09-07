@@ -14,7 +14,7 @@ import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GqlSafeSerializerInterceptor } from './GqlSafeSerializerInterceptor';
-import { Context } from 'graphql-ws';
+import { RagModule } from './rag/rag.module';
 
 @Module({
   imports: [
@@ -67,6 +67,7 @@ import { Context } from 'graphql-ws';
     SessionModule,
     AuthModule,
     FilesModule,
+    RagModule,
   ],
   controllers: [AppController],
   providers: [

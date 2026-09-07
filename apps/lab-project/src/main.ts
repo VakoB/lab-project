@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './utils/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,18 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL ?? 'amqp://admin:admin@localhost:5672'],
+      queue: 'rag_core_events_queue',
+      queueOptions: { durable: true },
+      noAck: false,
+    },
+  });
+
+  await app.startAllMicroservices();
 
   const config = new DocumentBuilder()
     .setTitle('Chat API Platform')

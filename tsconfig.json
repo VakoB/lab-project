@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "module": "nodenext",
-    "types": ["jest"],
+    "types": [
+      "jest"
+    ],
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
@@ -22,12 +24,23 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "paths": {
-      "@app/shared": ["libs/shared/src/index.ts"],
-      "@app/shared/*": ["libs/shared/src/*"],
-      "generated/prisma/client": ["generated/prisma/client"],
-      "generated/prisma/client/*": ["generated/prisma/client/*"]
+      "@app/shared": [
+        "libs/shared/src/index.ts"
+      ],
+      "@app/shared/*": [
+        "libs/shared/src/*"
+      ],
+      "generated/prisma/client": [
+        "generated/prisma/client"
+      ],
+      "generated/prisma/client/*": [
+        "generated/prisma/client/*"
+      ]
     }
   }
 }

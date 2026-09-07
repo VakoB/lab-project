@@ -107,14 +107,10 @@ export class MessageResolver {
 
   @Subscription(() => MessageType, {
     filter: (payload: MessageAddedPayload, variables: MessageArgs) => {
-      try {
-        return (
-          String(payload?.messageAdded?.conversationId) ===
-          String(variables?.conversationId)
-        );
-      } catch (err) {
-        return false;
-      }
+      return (
+        String(payload?.messageAdded?.conversationId) ===
+        String(variables?.conversationId)
+      );
     },
   })
   messageAdded(

@@ -42,7 +42,7 @@ export class FilesService {
     });
 
     if (existing) {
-      return new ConflictException(
+      throw new ConflictException(
         'File with the same content already exists in the organization',
       );
     }

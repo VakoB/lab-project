@@ -19,6 +19,7 @@ model Organization {
   name String
   users User[]
   files File[]
+  ragIngestionJobs RagIngestionJob[]
   conversations Conversation[]
 
   createdAt DateTime @default(now())
@@ -59,6 +60,7 @@ model File {
   size Int
   sha256 String
   storageKey String
+  ragIngestionJobs RagIngestionJob[]
   
   organizationId String
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -222,6 +224,26 @@ model ProcessingResult {
   rowsProcessed Int
 
   createdAt DateTime @default(now())
+}
+
+model RagIngestionJob {
+  id String @id @default(cuid())
+  fileId String
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  correlationId String
+  status ProcessingStatus @default(PENDING)
+  retryCount Int @default(0)
+  errorMessage String?
+  chunkCount Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([fileId])
 }
 
 enum ProcessingStatus {
